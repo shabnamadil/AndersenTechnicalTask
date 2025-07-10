@@ -1,0 +1,119 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Dropbox
+.dropbox
+.dropbox.attr
+.dropbox.cache
+
+# ========== EDITORS ==========
+# VSCode
+.vscode/
+.settings/
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+
+# IntelliJ / PyCharm
+.idea/
+
+# ========== PYTHON ==========
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env/
+.env
+
+# Distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+downloads/
+develop-eggs/
+parts/
+sdist/
+var/
+.installed.cfg
+.Python
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Logs
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+.mypy_cache/
+
+# Django
+*.pot
+*.mo
+*.pyc
+*.sqlite3
+local_settings.py
+celerybeat-schedule*
+db.sqlite3
+
+# Ignore all migration folders
+**/migrations/**
+**/migrations/*.py
+
+# Static/Media
+
+# Docs
+docs/_build/
+
+# PyBuilder
+target/

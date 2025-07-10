@@ -1,0 +1,23 @@
+name: Conventional Commit
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Check commit messages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lint commit messages
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          allowed-commit-types: "feat,fix,docs,test,ci,refactor,perf,chore,revert"
