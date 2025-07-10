@@ -15,7 +15,7 @@ class CustomUserAdmin(BaseUserAdmin):
         "is_superuser",
         "is_active",
     )
-    list_filter = ("date_joined",)
+    list_filter = ("date_joined", "is_active", "is_staff", "is_superuser")
     fieldsets = (
         (
             "Personal info",
