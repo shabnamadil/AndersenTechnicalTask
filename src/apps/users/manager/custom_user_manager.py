@@ -1,13 +1,19 @@
-from django.contrib.auth.models import BaseUserManager
-from django.utils.translation import gettext_lazy as _
+from typing import TYPE_CHECKING, Generic, TypeVar
+
+from django.contrib.auth.models import UserManager
+
+if TYPE_CHECKING:
+    from apps.users.models import CustomUser
+
+T = TypeVar("T", bound="CustomUser")
 
 
-class CustomUserManager(BaseUserManager):
+class CustomUserManager(UserManager[T], Generic[T]):
     def create_user(self, username, password=None, **extra_fields):
         if not username:
-            raise ValueError(_("The username field must be set."))
+            raise ValueError("The username field must be set.")
         if not extra_fields.get("first_name"):
-            raise ValueError(_("The first name field must be set."))
+            raise ValueError("The first name field must be set.")
 
         user = self.model(username=username, **extra_fields)
         user.set_password(password)
@@ -19,8 +25,8 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
 
         if extra_fields.get("is_staff") is not True:
-            raise ValueError(_("Superuser must have is_staff=True."))
+            raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
-            raise ValueError(_("Superuser must have is_superuser=True."))
+            raise ValueError("Superuser must have is_superuser=True.")
 
         return self.create_user(username, password, **extra_fields)

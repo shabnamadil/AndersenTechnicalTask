@@ -1,13 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.utils.html import format_html
 
 from .models import CustomUser
 
 
 class CustomUserAdmin(BaseUserAdmin):
     model = CustomUser
-    ordering = ("username", )
+    ordering = ("-date_joined",)
     list_display = (
         "full_name",
         "username",

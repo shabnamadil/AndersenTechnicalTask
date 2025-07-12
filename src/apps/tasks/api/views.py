@@ -1,17 +1,16 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-from .permissions import IsTaskAuthor
-from .serializers import (
-    TaskListSerializer,
-    TaskPostSerializer
+from rest_framework.generics import (
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
 )
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.tasks.models import Task
+
+from .permissions import IsTaskAuthor
 from .repositories import TaskRepository
+from .serializers import TaskListSerializer, TaskPostSerializer
 
 
 class TaskListCreateAPIView(ListCreateAPIView):
@@ -23,7 +22,7 @@ class TaskListCreateAPIView(ListCreateAPIView):
         if self.request.method == "POST":
             self.serializer_class = TaskPostSerializer
         return super().get_serializer_class()
-    
+
     def get_filter_methods(self):
         repo = self.repo()
         return {
@@ -39,13 +38,16 @@ class TaskListCreateAPIView(ListCreateAPIView):
             if key in filters:
                 qs = filters[key](value, qs)
         return qs
-    
+
 
 class TaskRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-    queryset = Task.objects.all()
     serializer_class = TaskListSerializer
     permission_classes = (IsAuthenticated, IsTaskAuthor)
-    
+
+    def get_queryset(self, **kwargs):
+        qs = Task.objects.filter(user=self.request.user)
+        return qs
+
 
 class MarkTaskCompletedView(APIView):
     permission_classes = (IsAuthenticated, IsTaskAuthor)

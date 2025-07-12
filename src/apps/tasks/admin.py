@@ -17,12 +17,7 @@ def make_completed(self, request, queryset):
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = (
-        "title",
-        "status",
-        "display_user",
-        "created_date",
-    )
+    list_display = ("title", "status", "display_user", "created_date", "updated_date")
     list_filter = ("created_at", "status")
     search_fields = (
         "title",
@@ -30,13 +25,13 @@ class TaskAdmin(admin.ModelAdmin):
         "status",
         "user__first_name",
         "user__username",
-        "user__last_name"
+        "user__last_name",
     )
     ordering = ("-updated_at", "title")
     date_hierarchy = "created_at"
     list_per_page = 20
-    actions = (make_completed, )
-    readonly_fields = ("user", "slug")
+    actions = (make_completed,)
+    readonly_fields = ("user",)
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:
@@ -44,9 +39,7 @@ class TaskAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
     def display_user(self, obj):
-        user_name = (
-            obj.user.get_full_name() if obj.user.get_full_name() else "Admin"
-        )
+        user_name = obj.user.get_full_name() if obj.user.get_full_name() else "Admin"
         url = reverse("admin:users_customuser_change", args=[obj.user.id])
         link = '<a style="color: red;" href="%s">%s</a>' % (
             url,
@@ -54,6 +47,4 @@ class TaskAdmin(admin.ModelAdmin):
         )
         return format_html(link)
 
-    display_user.short_description = "Müəllif"  # type: ignore[attr-defined]
-
-  
+    display_user.short_description = "Author"  # type: ignore[attr-defined]

@@ -1,9 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.templatetags.static import static
-from django.utils.translation import gettext as _
 
 from rest_framework import serializers
+
 from utils.serializers.password_field import PasswordField
 
 User = get_user_model()
@@ -31,14 +30,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         if not password_confirm:
             raise serializers.ValidationError(
                 {
-                    "password_confirm": _("This field is required."),
+                    "password_confirm": "This field is required.",
                 }
             )
 
         if password != password_confirm:
             raise serializers.ValidationError(
                 {
-                    "password_confirm": _("Passwords do not match."),
+                    "password_confirm": "Passwords do not match.",
                 }
             )
 
