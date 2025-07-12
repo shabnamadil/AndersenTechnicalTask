@@ -10,7 +10,7 @@ class TaskRepository:
 
     @staticmethod
     def mark_task_completed(task_id, user):
-        task = Task.objects.filter(pk=task_id, owner=user).first()
+        task = Task.objects.filter(pk=task_id, user=user).first()
         if task and task.status != Task.Status.COMPLETED:
             task.status = Task.Status.COMPLETED
             task.save(update_fields=["status"])
@@ -20,7 +20,4 @@ class TaskRepository:
         return qs.filter(status=status)
 
     def get_by_query(self, query, qs):
-        return qs.filter(
-            Q(title__contains=query)
-            | Q(description__contains=query)
-        )
+        return qs.filter(Q(title__contains=query) | Q(description__contains=query))

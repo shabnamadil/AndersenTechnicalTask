@@ -3,20 +3,21 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.token_blacklist.models import (
+    BlacklistedToken,
+    OutstandingToken,
+)
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
-from .serializers import RegisterSerializer
-from django.conf import settings
 from utils.views.refresh_cookie import set_refresh_cookie
 
+from .serializers import RegisterSerializer
 
 User = get_user_model()
 
@@ -35,7 +36,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         news_response = Response({"access": access_token}, status=status.HTTP_200_OK)
         set_refresh_cookie(news_response, refresh_token)
 
-        return Response({"detail": "Token was given successfully"}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Token was given successfully"},
+            status=status.HTTP_200_OK,
+        )
 
 
 class CustomTokenRefreshView(TokenRefreshView):
@@ -64,11 +68,15 @@ class CustomTokenRefreshView(TokenRefreshView):
         new_response = Response({"access": access_token}, status=status.HTTP_200_OK)
         set_refresh_cookie(new_response, new_refresh_token)
 
-        return Response({"detail": "Token was renewed successfully"}, status=status.HTTP_200_OK)
-    
+        return Response(
+            {"detail": "Token was renewed successfully"},
+            status=status.HTTP_200_OK,
+        )
+
 
 class LogoutAPIView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         refresh_token = request.COOKIES.get("refresh_token")
 
@@ -87,10 +95,13 @@ class LogoutAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = Response({"detail": "Successfully logged out"}, status=status.HTTP_205_RESET_CONTENT)
+        response = Response(
+            {"detail": "Successfully logged out"},
+            status=status.HTTP_205_RESET_CONTENT,
+        )
         response.delete_cookie("refresh_token", path="/api/token/refresh/")
         return response
-    
+
 
 class LogoutAllDevicesAPIView(APIView):
     permission_classes = (IsAuthenticated,)

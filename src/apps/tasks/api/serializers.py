@@ -1,16 +1,12 @@
 from rest_framework import serializers
+
 from apps.tasks.models import Task
 
 
 class TaskListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = (
-            "id",
-            "title",
-            "description",
-            "status"
-        )
+        fields = ("id", "title", "description", "status", "created_date")
 
 
 class TaskPostSerializer(serializers.ModelSerializer):
@@ -25,7 +21,7 @@ class TaskPostSerializer(serializers.ModelSerializer):
             "description",
             "status",
             "user",
-            "created_date"
+            "created_date",
         )
 
     def validate(self, attrs):

@@ -3,9 +3,9 @@ from django.urls import path
 from .views import (
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
+    LogoutAllDevicesAPIView,
     LogoutAPIView,
     RegisterAPIView,
-    LogoutAllDevicesAPIView
 )
 
 urlpatterns = [
@@ -21,5 +21,5 @@ urlpatterns = [
         name="custom_token_refresh",
     ),
     path("logout/", LogoutAPIView.as_view(), name="logout"),
-    path("logout_all/", LogoutAllDevicesAPIView.as_view(), name="logout_all")
+    path("logout_all/", LogoutAllDevicesAPIView.as_view(), name="logout_all"),
 ]
