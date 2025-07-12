@@ -23,10 +23,3 @@ class TaskPostSerializer(serializers.ModelSerializer):
             "user",
             "created_date",
         )
-
-    def validate(self, attrs):
-        request = self.context.get("request")
-        if not request or not request.user.is_authenticated:
-            raise serializers.ValidationError("You have to log in")
-        attrs["user"] = request.user
-        return attrs

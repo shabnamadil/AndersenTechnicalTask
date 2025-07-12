@@ -14,14 +14,13 @@ from .serializers import TaskListSerializer, TaskPostSerializer
 
 
 class TaskListCreateAPIView(ListCreateAPIView):
-    serializer_class = TaskListSerializer
     permission_classes = (IsAuthenticated,)
     repo = TaskRepository
 
     def get_serializer_class(self):
         if self.request.method == "POST":
-            self.serializer_class = TaskPostSerializer
-        return super().get_serializer_class()
+            return TaskPostSerializer
+        return TaskListSerializer
 
     def get_filter_methods(self):
         repo = self.repo()
@@ -31,13 +30,16 @@ class TaskListCreateAPIView(ListCreateAPIView):
         }
 
     def get_queryset(self, **kwargs):
-        qs = Task.objects.all()
+        qs = self.repo.get_all()
         filters = self.get_filter_methods()
 
-        for key, value in self.request.query_params.items():
+        for key, value in self.request.q:
             if key in filters:
                 qs = filters[key](value, qs)
         return qs
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class TaskRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
