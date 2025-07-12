@@ -3,8 +3,8 @@ from django.contrib.auth.password_validation import validate_password
 
 from rest_framework import serializers
 
+from utils.serializers.helpers import PasswordField
 from utils.serializers.mixins import PasswordConfirmationMixin
-from utils.serializers.password_field import PasswordField
 
 User = get_user_model()
 

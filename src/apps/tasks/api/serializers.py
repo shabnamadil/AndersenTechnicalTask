@@ -10,11 +10,9 @@ class TaskListSerializer(serializers.ModelSerializer):
 
 
 class TaskPostSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    created_date = serializers.ReadOnlyField()
-
     class Meta:
         model = Task
+        read_only_fields = ("user", "created_date")
         fields = (
             "id",
             "title",
