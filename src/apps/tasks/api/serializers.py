@@ -10,11 +10,9 @@ class TaskListSerializer(serializers.ModelSerializer):
 
 
 class TaskPostSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    created_date = serializers.ReadOnlyField()
-
     class Meta:
         model = Task
+        read_only_fields = ("user", "created_date")
         fields = (
             "id",
             "title",
@@ -23,10 +21,3 @@ class TaskPostSerializer(serializers.ModelSerializer):
             "user",
             "created_date",
         )
-
-    def validate(self, attrs):
-        request = self.context.get("request")
-        if not request or not request.user.is_authenticated:
-            raise serializers.ValidationError("You have to log in")
-        attrs["user"] = request.user
-        return attrs

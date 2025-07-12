@@ -5,17 +5,15 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.token_blacklist.models import (
-    BlacklistedToken,
-    OutstandingToken,
-)
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
-from utils.views.refresh_cookie import set_refresh_cookie
+from utils.auth.cookies import clear_refresh_cookie
+from utils.auth.mixins import TokenResponseMixin
+from utils.auth.tokens import blacklist_all_tokens_for_user
 
 from .serializers import RegisterSerializer
 
@@ -25,21 +23,24 @@ User = get_user_model()
 class RegisterAPIView(CreateAPIView):
     serializer_class = RegisterSerializer
 
+    def perform_create(self, serializer):
+        validated_data = serializer.validated_data
+        validated_data.pop("password_confirm", None)
+        user = User.objects.create_user(**validated_data)
+        return user
 
-class CustomTokenObtainPairView(TokenObtainPairView):
+
+class CustomTokenObtainPairView(TokenResponseMixin, TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
 
         access_token = response.data.get("access")
         refresh_token = response.data.get("refresh")
 
-        news_response = Response({"access": access_token}, status=status.HTTP_200_OK)
-        set_refresh_cookie(news_response, refresh_token)
-
-        return news_response
+        return self.build_token_response(access_token, refresh_token)
 
 
-class CustomTokenRefreshView(TokenRefreshView):
+class CustomTokenRefreshView(TokenResponseMixin, TokenRefreshView):
     def post(self, request, *args, **kwargs):
         refresh_token = request.COOKIES.get("refresh_token")
 
@@ -62,10 +63,7 @@ class CustomTokenRefreshView(TokenRefreshView):
         access_token = serializer.validated_data.get("access")
         new_refresh_token = serializer.validated_data.get("refresh")
 
-        new_response = Response({"access": access_token}, status=status.HTTP_200_OK)
-        set_refresh_cookie(new_response, new_refresh_token)
-
-        return new_response
+        self.build_token_response(access_token, new_refresh_token)
 
 
 class LogoutAPIView(APIView):
@@ -93,15 +91,15 @@ class LogoutAPIView(APIView):
             {"detail": "Successfully logged out"},
             status=status.HTTP_205_RESET_CONTENT,
         )
-        response.delete_cookie("refresh_token", path="/api/token/refresh/")
-        return response
+        return clear_refresh_cookie(response)
 
 
 class LogoutAllDevicesAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        tokens = OutstandingToken.objects.filter(user_id=request.user.id)
-        for token in tokens:
-            t, _ = BlacklistedToken.objects.get_or_create(token=token)
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+        blacklist_all_tokens_for_user(request.user)
+        return Response(
+            {"detail": "All sessions have been logged out successfully."},
+            status=status.HTTP_200_OK,
+        )
