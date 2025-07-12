@@ -36,10 +36,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         news_response = Response({"access": access_token}, status=status.HTTP_200_OK)
         set_refresh_cookie(news_response, refresh_token)
 
-        return Response(
-            {"detail": "Token was given successfully"},
-            status=status.HTTP_200_OK,
-        )
+        return news_response
 
 
 class CustomTokenRefreshView(TokenRefreshView):
@@ -68,10 +65,7 @@ class CustomTokenRefreshView(TokenRefreshView):
         new_response = Response({"access": access_token}, status=status.HTTP_200_OK)
         set_refresh_cookie(new_response, new_refresh_token)
 
-        return Response(
-            {"detail": "Token was renewed successfully"},
-            status=status.HTTP_200_OK,
-        )
+        return new_response
 
 
 class LogoutAPIView(APIView):

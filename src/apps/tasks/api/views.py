@@ -8,14 +8,14 @@ from rest_framework.views import APIView
 
 from apps.tasks.models import Task
 
-from .permissions import IsTaskAuthor
+from .permissions import IsAuthenticatedReadOnlyOrAuthor
 from .repositories import TaskRepository
 from .serializers import TaskListSerializer, TaskPostSerializer
 
 
 class TaskListCreateAPIView(ListCreateAPIView):
     serializer_class = TaskListSerializer
-    permission_classes = (IsAuthenticated, IsTaskAuthor)
+    permission_classes = (IsAuthenticated,)
     repo = TaskRepository
 
     def get_serializer_class(self):
@@ -31,7 +31,7 @@ class TaskListCreateAPIView(ListCreateAPIView):
         }
 
     def get_queryset(self, **kwargs):
-        qs = Task.objects.filter(user=self.request.user)
+        qs = Task.objects.all()
         filters = self.get_filter_methods()
 
         for key, value in self.request.query_params.items():
@@ -42,15 +42,12 @@ class TaskListCreateAPIView(ListCreateAPIView):
 
 class TaskRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = TaskListSerializer
-    permission_classes = (IsAuthenticated, IsTaskAuthor)
-
-    def get_queryset(self, **kwargs):
-        qs = Task.objects.filter(user=self.request.user)
-        return qs
+    queryset = Task.objects.all()
+    permission_classes = (IsAuthenticatedReadOnlyOrAuthor,)
 
 
 class MarkTaskCompletedView(APIView):
-    permission_classes = (IsAuthenticated, IsTaskAuthor)
+    permission_classes = (IsAuthenticatedReadOnlyOrAuthor,)
     repo = TaskRepository
 
     def post(self, request, pk):
