@@ -27,13 +27,14 @@ class TaskListCreateAPIView(ListCreateAPIView):
         return {
             "status": repo.get_by_status,
             "q": repo.get_by_query,
+            "user": repo.get_by_user,
         }
 
     def get_queryset(self, **kwargs):
-        qs = self.repo.get_all()
+        qs = Task.objects.all()
         filters = self.get_filter_methods()
 
-        for key, value in self.request.q:
+        for key, value in self.request.query_params.items():
             if key in filters:
                 qs = filters[key](value, qs)
         return qs

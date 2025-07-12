@@ -14,8 +14,8 @@ class TaskRepository:
     def get_by_query(self, query, qs):
         return qs.filter(Q(title__contains=query) | Q(description__contains=query))
 
-    def get_all(self):
-        self.model.objects.all()
+    def get_by_user(self, user_id, qs):
+        return qs.filter(user=user_id)
 
     def mark_task_completed(task_id, user):
         task = Task.objects.filter(pk=task_id, user=user).first()
