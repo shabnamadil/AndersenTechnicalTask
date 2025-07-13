@@ -1,7 +1,6 @@
 from typing import ClassVar
 
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from apps.users.manager.custom_user_manager import CustomUserManager
@@ -25,10 +24,3 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.full_name
-
-    def clean(self):
-        if len(self.password) < 6:
-            raise ValidationError(
-                {"password1": "Password must be at least 6 characters long."}
-            )
-        return self.password

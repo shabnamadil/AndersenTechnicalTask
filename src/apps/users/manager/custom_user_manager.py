@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from django.contrib.auth.models import UserManager
+from django.contrib.auth.password_validation import validate_password
 
 if TYPE_CHECKING:
     from apps.users.models import CustomUser
@@ -12,6 +13,8 @@ class CustomUserManager(UserManager[T], Generic[T]):
     def create_user(self, username, password=None, **extra_fields):
         if not username:
             raise ValueError("The username field must be set.")
+        if password:
+            validate_password(password)
         if not extra_fields.get("first_name"):
             raise ValueError("The first name field must be set.")
 
