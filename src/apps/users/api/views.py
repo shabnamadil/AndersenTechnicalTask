@@ -63,7 +63,7 @@ class CustomTokenRefreshView(TokenResponseMixin, TokenRefreshView):
         access_token = serializer.validated_data.get("access")
         new_refresh_token = serializer.validated_data.get("refresh")
 
-        self.build_token_response(access_token, new_refresh_token)
+        return self.build_token_response(access_token, new_refresh_token)
 
 
 class LogoutAPIView(APIView):
