@@ -38,6 +38,5 @@ class TestUserModel:
         assert user.full_name == "Admin User"
 
     def test_str_method_returns_full_name(self, mocker):
-        user = User(username="johndoe")
-        mocker.patch.object(user, "get_full_name", return_value="Test User")
-        assert str(user) == "Test User"
+        user = User(username="johndoe", first_name="Jhon", last_name="Doe")
+        assert str(user) == "Jhon Doe"

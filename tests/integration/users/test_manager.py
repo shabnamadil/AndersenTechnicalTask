@@ -7,16 +7,6 @@ import pytest
 User = get_user_model()
 
 
-@pytest.fixture
-def superuser():
-    return User.objects.create_superuser(
-        username="testuser",
-        first_name="Test",
-        last_name="User",
-        password="securepassword",
-    )
-
-
 @pytest.mark.integration
 @pytest.mark.django_db
 class TestCustomUserManager:

@@ -18,7 +18,7 @@ class Task(BaseModel):
         max_length=100,
         help_text="The content length is a maximum of 100.",
     )
-    description = models.TextField("Description", blank=True)
+    description = models.TextField("Description", blank=True, null=True)
     status = models.CharField(
         "Status", max_length=11, choices=Status.choices, default=Status.NEW
     )
@@ -33,6 +33,8 @@ class Task(BaseModel):
         ordering = ["-created_at"]
         indexes = [models.Index(fields=["-created_at"])]
         unique_together = ("user", "title")
+        verbose_name = "Task"
+        verbose_name_plural = "Tasks"
 
     def __str__(self) -> str:
         return self.title

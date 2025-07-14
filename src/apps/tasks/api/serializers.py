@@ -21,3 +21,13 @@ class TaskPostSerializer(serializers.ModelSerializer):
             "user",
             "created_date",
         )
+
+    def validate(self, attrs):
+        user = self.context["request"].user
+        title = attrs.get("title")
+
+        if Task.objects.filter(title=title, user=user).exists():
+            raise serializers.ValidationError(
+                {"title": "A task with this title already exists for this user."}
+            )
+        return attrs
