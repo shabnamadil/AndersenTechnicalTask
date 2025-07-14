@@ -7,44 +7,24 @@ from apps.users.api.serializers import RegisterSerializer
 User = get_user_model()
 
 
-@pytest.fixture
-def register_data():
-    return {
-        "first_name": "John",
-        "last_name": "Doe",
-        "username": "john_doe",
-        "password": "StrongPass123!",
-        "password_confirm": "StrongPass123!",
-    }
-
-
 @pytest.mark.integration
 @pytest.mark.django_db
 class TestRegisterSerializer:
 
-    def test_missing_first_name(self, register_data):
-        register_data["first_name"] = None
+    @pytest.mark.parametrize(
+        "field, value",
+        [
+            ("first_name", ""),
+            ("username", ""),
+            ("password", ""),
+            ("password_confirm", ""),
+        ],
+    )
+    def test_missing_required_fields(self, field, value, register_data):
+        register_data[field] = value
         serializer = RegisterSerializer(data=register_data)
         assert not serializer.is_valid()
-        assert "first_name" in serializer.errors
-
-    def test_missing_username(self, register_data):
-        register_data["username"] = None
-        serializer = RegisterSerializer(data=register_data)
-        assert not serializer.is_valid()
-        assert "username" in serializer.errors
-
-    def test_missing_password(self, register_data):
-        register_data["password"] = None
-        serializer = RegisterSerializer(data=register_data)
-        assert not serializer.is_valid()
-        assert "password" in serializer.errors
-
-    def test_missing_password_confirm(self, register_data):
-        register_data["password_confirm"] = register_data["password"] + "_mismatch"
-        serializer = RegisterSerializer(data=register_data)
-        assert not serializer.is_valid()
-        assert "password_confirm" in serializer.errors
+        assert field in serializer.errors
 
     def test_passwords_do_not_match(self, register_data):
         register_data["password_confirm"] = register_data["password"] + "_mismatch"
@@ -62,7 +42,7 @@ class TestRegisterSerializer:
 
     def test_username_already_registered(self, register_data):
         User.objects.create_user(
-            username="john_doe",
+            username="jhon_doe",
             first_name="Existing",
             last_name="User",
             password="AnotherPass123!",
@@ -70,3 +50,12 @@ class TestRegisterSerializer:
         serializer = RegisterSerializer(data=register_data)
         assert not serializer.is_valid()
         assert "username" in serializer.errors
+
+    def test_valid_registration(self, register_data):
+        serializer = RegisterSerializer(data=register_data)
+        assert serializer.is_valid(), serializer.errors
+        user = serializer.save()
+        assert user.username == register_data["username"]
+        assert user.first_name == register_data["first_name"]
+        assert user.check_password(register_data["password"])
+        assert user.last_name == register_data.get("last_name", "")

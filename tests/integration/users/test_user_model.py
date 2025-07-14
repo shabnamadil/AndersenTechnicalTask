@@ -4,14 +4,9 @@ from django.db import IntegrityError
 
 import pytest
 
-from tests.utils.factories import UserFactory
+from tests.factories import UserFactory
 
 User = get_user_model()
-
-
-@pytest.fixture
-def user():
-    return UserFactory()
 
 
 @pytest.mark.integration
@@ -24,18 +19,16 @@ class TestUserCreation:
         assert user.first_name != ""
         assert user.last_name != ""
 
-    def test_create_user_without_first_name_raises_error(self, user):
-        user.first_name = ""
-        with pytest.raises(ValidationError):
-            user.full_clean()
-
-    def test_create_user_without_username_raises_error(self, user):
-        user.username = ""
-        with pytest.raises(ValidationError):
-            user.full_clean()
-
-    def test_create_user_without_password_raises_error(self, user):
-        user.password = ""
+    @pytest.mark.parametrize(
+        "field, value",
+        [
+            ("first_name", ""),
+            ("username", ""),
+            ("password", ""),
+        ],
+    )
+    def test_required_fields_raise_validation_error(self, user, field, value):
+        setattr(user, field, value)
         with pytest.raises(ValidationError):
             user.full_clean()
 

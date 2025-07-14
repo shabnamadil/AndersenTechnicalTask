@@ -23,12 +23,6 @@ User = get_user_model()
 class RegisterAPIView(CreateAPIView):
     serializer_class = RegisterSerializer
 
-    def perform_create(self, serializer):
-        validated_data = serializer.validated_data
-        validated_data.pop("password_confirm", None)
-        user = User.objects.create_user(**validated_data)
-        return user
-
 
 class CustomTokenObtainPairView(TokenResponseMixin, TokenObtainPairView):
     def post(self, request, *args, **kwargs):

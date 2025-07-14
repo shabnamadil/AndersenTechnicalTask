@@ -1,38 +1,8 @@
 import datetime
 
-from django.urls import reverse
-
 import pytest
 from rest_framework import status
-from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from tests.utils.factories import UserFactory
-
-
-@pytest.fixture
-def user():
-    return UserFactory()
-
-
-@pytest.fixture
-def api_client():
-    return APIClient()
-
-
-@pytest.fixture
-def refresh_url():
-    return reverse("custom_token_refresh")
-
-
-@pytest.fixture
-def obtain_url():
-    return reverse("custom_token_obtain_pair")
-
-
-@pytest.fixture
-def valid_credentials(user):
-    return {"username": user.username, "password": "securepassword"}
 
 
 @pytest.mark.django_db
