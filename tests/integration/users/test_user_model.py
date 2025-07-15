@@ -43,7 +43,7 @@ class TestUserCreation:
 
     def test_create_user_with_short_password(self):
         with pytest.raises(ValidationError):
-            User.objects.create_user(username="u1", password="123")
+            User.objects.create_user(first_name="user", username="u1", password="123")
 
     def test_password_is_hashed(self, user):
         assert user.password.startswith("pbkdf2_sha256$")
