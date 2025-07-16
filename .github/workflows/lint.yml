@@ -16,5 +16,5 @@ jobs:
       - run: pip install --upgrade virtualenv pip setuptools
       - run: virtualenv .venv
       - run: source .venv/bin/activate
-      - run: make install
+      - run: make dev-install
       - run: make lint
