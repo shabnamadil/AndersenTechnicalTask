@@ -1,0 +1,65 @@
+name: Test project
+on: 
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip 
+          key: ${{ runner.os }}-pip-${{ hashFiles('_development/requirements_dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Setup virtualenv
+        run: pip install --upgrade virtualenv pip setuptools
+
+      - run: virtualenv .venv
+      - run: source .venv/bin/activate
+      - run: make dev-install
+
+      - name: Set environment variables
+        run: echo "SECRET_KEY=${{ secrets.ANDERSEN_SECRET_KEY }}" >> $GITHUB_ENV
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Build and start Docker container
+        run: make dev-build
+
+      - name: Wait for Postgres to be ready
+        run: |
+          until docker exec postgres-dev-db pg_isready -U dev_user -d dev_db; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
+      - name: Run Migrations inside Django container
+        run: make migrate-all
+
+      - name: Run Django tests
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.ANDERSEN_SECRET_KEY}}
+          DJANGO_SETTINGS_MODULE: config.settings.dev
+        run: |
+          make test
+
+      - name: Stop and clean up Docker services
+        if: always()
+        run: cd _development && docker-compose down development

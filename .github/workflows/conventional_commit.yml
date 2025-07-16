@@ -2,7 +2,7 @@ name: Conventional Commit
 
 on:
   push:
-    branches: ['**']
+    branches: ['*']
   pull_request:
     branches:
       - main
