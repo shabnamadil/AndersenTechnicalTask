@@ -1,0 +1,59 @@
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+exclude = "(migrations|settings|__init__\\.py)"
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+force_grid_wrap = 0
+skip = ["migrations", "venv", "settings"]
+known_django = "django"
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.autoflake]
+remove-all-unused-imports = true
+remove-unused-variables = true
+recursive = true
+in-place = true
+exclude = ["__init__.py", "migrations", "apps.py", "settings"]
+
+[tool.autopep8]
+max_line_length = 88
+in-place = true
+recursive = true
+aggressive = 2
+exclude = "__init__.py, migrations, apps.py, settings"
+
+[tool.bandit]
+severity = "high"
+confidence = "high"
+skips = ["B311", "B404"]
+exclude_dirs = ["tests"]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+mypy_path = "src"
+exclude = ["src/.*/migrations/.*"]
+python_version = "3.12"
+warn_unused_ignores = true
+warn_return_any = true
+show_error_codes = true
+warn_unused_configs = true
+ignore_missing_imports = true
+no_site_packages = false
+
+[tool.django-stubs]
+django_settings_module = "config.settings.dev"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = "tests"
+DJANGO_SETTINGS_MODULE = "config.settings.dev"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+markers = [
+    "unit: marks tests as unit (deselect with '-m \"not unit\"')",
+    "integration: marks tests as integration (deselect with '-m \"not integration\"')"
+]
