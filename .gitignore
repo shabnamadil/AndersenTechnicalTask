@@ -65,6 +65,7 @@ venv/
 env/
 .env/
 .env
+.env.prod
 
 # Distribution
 build/

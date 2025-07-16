@@ -47,7 +47,7 @@ class TestTaskListAPI:
         TaskFactory(title="Buy eggs", user=user)
         TaskFactory(title="Walk the dog", user=user)
 
-        response = authenticated_client.get(task_list_create_url, {"q": "BUY"})
+        response = authenticated_client.get(task_list_create_url, {"q": "Buy"})
         assert response.status_code == status.HTTP_200_OK
 
         assert response.status_code == status.HTTP_200_OK

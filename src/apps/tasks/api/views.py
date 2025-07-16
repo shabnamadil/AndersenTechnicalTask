@@ -1,3 +1,4 @@
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
@@ -53,10 +54,16 @@ class MarkTaskCompletedView(APIView):
     permission_classes = (IsAuthenticatedReadOnlyOrAuthor,)
     repo = TaskRepository
 
-    def post(self, request, pk):
-        task = self.repo.mark_task_completed(pk, request.user)
+    def patch(self, request, pk):
+        try:
+            task = self.repo.mark_task_completed(pk, request.user)
+        except PermissionDenied:
+            return Response({"detail": "You do not have permission."}, status=403)
+
         if not task:
             return Response({"detail": "Task not found"}, status=404)
+
         if task.status == Task.Status.COMPLETED:
             return Response({"status": "already completed"}, status=200)
+
         return Response({"status": "completed"}, status=200)

@@ -17,6 +17,11 @@ def user():
 
 
 @pytest.fixture
+def another_user():
+    return UserFactory()
+
+
+@pytest.fixture
 def superuser():
     return User.objects.create_superuser(
         username="testuser",
@@ -82,6 +87,11 @@ def task_list_create_url():
 @pytest.fixture
 def task_detail_url(task):
     return reverse("task_update_destroy", args=[task.id])
+
+
+@pytest.fixture
+def task_complete_url(task):
+    return reverse("task_completed", args=[task.id])
 
 
 @pytest.fixture
