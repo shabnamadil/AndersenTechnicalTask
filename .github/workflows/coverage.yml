@@ -39,7 +39,7 @@ jobs:
         if: ${{ steps.coverage_check.outcome == 'failure' }}
         uses: actions/github-script@v5
         with:
-          github-token: ${{secrets.PAT}}
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const message = `🚨 The code coverage is below the specified threshold. Please add more tests to improve coverage. 🚨`;
             github.rest.issues.createComment({
