@@ -1,6 +1,6 @@
 services:
   postgres:
-    container_name: postgres-db
+    container_name: postgres_db
     image: postgres:15-alpine 
     restart: always
     environment:
@@ -18,8 +18,8 @@ services:
     env_file:
       - .env.prod
     volumes:
-      - ./app:/code
-      - ./app/static:/code/static
+      - ./src:/code
+      - ./src/static:/code/static
     ports:
       - "8000:8000"
     depends_on:
@@ -33,7 +33,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./nginx/sites/technical_task.com.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/sites/conf.d/client_max_body_size.conf:/etc/nginx/conf.d/client_max_body_size.conf:ro
-      - ./app/static:/code/static
+      - ./src/static:/code/static
     ports:
       - "80:80"
     depends_on:
