@@ -111,7 +111,7 @@ This system enables both end-users and developers to perform the following key a
 
 This project is containerized and deployed to production using Docker and AWS EC2. Below are the key deployment features.
 
-- 🔗 Live demo: http://13.60.211.242/api
+- 🔗 Live demo: [demo](http://13.60.211.242/api)
 - Dockerized Application for consistent environments across dev and production.
 - Automated deployment using GitHub Actions.
 - The app is deployed to an AWS EC2 Free Tier instance with Docker Compose.
@@ -134,7 +134,7 @@ The project provides comprehensive, auto-generated API documentation to facilita
 - ReDoc: Accessible at [/api/redoc/](http://13.60.211.242/api/redoc/) — provides a clean, structured, and readable format of the API documentation for detailed review.
 
 ![Login and refresh views](./assets/login-refresh-api.png)
-![Register and Logout](./assets/register-logout-api.png)
+![Register and Logout](./assets/register-logout.png)
 ![Tasks](./assets/tasks.png)
 
 
