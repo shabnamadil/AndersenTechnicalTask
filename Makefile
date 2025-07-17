@@ -59,7 +59,7 @@ dev-build:
 dev-run:
 	cd ${PROJECT_DIR} && ${PYTHON} manage.py runserver
 
-dev-setup: dev-install dev-build dev-run
+dev-setup: dev-install dev-build
 
 migrate-all:
 	cd ${PROJECT_DIR} && $(PYTHON) manage.py makemigrations users tasks --noinput && python3 manage.py migrate --noinput

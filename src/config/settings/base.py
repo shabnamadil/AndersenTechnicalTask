@@ -173,4 +173,11 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Andersen Technical Task API',
     'DESCRIPTION': 'API documentation for Andersen Technical Task',
     'VERSION': '1.0.0',
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
