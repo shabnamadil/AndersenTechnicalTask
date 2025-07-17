@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # THIRD PARTY APPS
     "rest_framework",
     'rest_framework_simplejwt.token_blacklist',
+    "drf_spectacular",
 
     # DJANGO SPECIFIC APPS
     "django.contrib.admin",
@@ -153,6 +154,7 @@ REST_FRAMEWORK = {
         'anon': '10/minute',
         'user': '50/hour',
     },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
@@ -165,4 +167,17 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Andersen Technical Task API',
+    'DESCRIPTION': 'API documentation for Andersen Technical Task',
+    'VERSION': '1.0.0',
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
