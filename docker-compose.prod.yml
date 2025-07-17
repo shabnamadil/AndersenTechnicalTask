@@ -17,6 +17,7 @@ services:
     build: .
     env_file:
       - .env.prod
+    user: "${UID}:${GID}"
     volumes:
       - ./src:/code
       - ./src/static:/code/static
