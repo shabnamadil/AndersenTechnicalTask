@@ -27,7 +27,7 @@ RUN pip install --upgrade pip && \
 RUN addgroup --system django && adduser --system --ingroup django django
 
 # Copy app source
-COPY ./app /code
+COPY ./src /code
 
 # Copy config files
 COPY uwsgi.ini /conf/uwsgi.ini
